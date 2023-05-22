@@ -19,13 +19,14 @@
 
 .modal-content {
   z-index: 1001;
+  position: relative;
 }
 
 .close-icon {
   font-size: 48px;
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 70px;
   cursor: pointer;
-  color: white;
+  color: rgb(242, 119, 119);
 }

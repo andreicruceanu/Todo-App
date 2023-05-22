@@ -53,3 +53,7 @@ p {
   align-items: center;
   justify-content: flex-start;
 }
+.description-text {
+  text-align: left;
+  margin-left: 4px;
+}

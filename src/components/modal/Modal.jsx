@@ -19,13 +19,14 @@ const Modal = (props) => {
 
   return (
     <div className={`${isOpen ? "modal-wrapper" : "modal-hidden"}`}>
-      <i
-        onClick={closeModal}
-        className="close-icon fa fa-times-circle-o"
-        aria-hidden="true"
-      ></i>
-
-      <div className="modal-content">{props.children}</div>
+      <div className="modal-content">
+        <i
+          onClick={closeModal}
+          className="close-icon fa fa-times-circle-o"
+          aria-hidden="true"
+        ></i>
+        {props.children}
+      </div>
     </div>
   );
 };

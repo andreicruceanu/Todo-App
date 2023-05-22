@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import "./TodoItem.css";
 import Checkbox from "../checkbox/CheckBox";
 
-const TodoItem = (props) => {
+const TodoItem = ({ id, title, description, completed, onCheckboxChange }) => {
   const handleCheckboxChange = (value) => {
-    console.log(value);
+    if (onCheckboxChange) {
+      console.log(value, id);
+      onCheckboxChange(value, id);
+    }
   };
 
   return (
-    <div className={`todo-item ${props.completed && "todo-completed"}`}>
+    <div className={`todo-item ${completed && "todo-completed"}`}>
       <div className="todo-item-header">
         <div className="title-area">
-          <Checkbox
-            checked={!!props.completed}
-            onChange={handleCheckboxChange}
-          />
+          <Checkbox checked={!!completed} onChange={handleCheckboxChange} />
 
-          <h4>Assignment 1</h4>
+          <h4>{title}</h4>
         </div>
         <div>
           <i className="fa fa-pencil" aria-hidden="true"></i>
@@ -26,10 +26,7 @@ const TodoItem = (props) => {
 
       <div className="separator"></div>
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. At id illo
-        repellendus non maiores in pariatur aliquam iure fugit amet!
-      </p>
+      <p className="description-text">{description}</p>
     </div>
   );
 };
