@@ -2,15 +2,18 @@
   margin: 0 0 10px;
   font-size: 16px;
   line-height: 16px;
-  padding: 5px 10px;
+  padding: 8px 10px;
   border: 1px solid #aaa;
   background: #fff;
   border-radius: 6px;
   font-family: Poppins, sans-serif;
   color: #555;
   width: 100%;
+  outline: none;
 }
 
 .textarea {
   resize: none;
+  padding: 10px 10px;
+  outline: none;
 }

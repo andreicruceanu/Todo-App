@@ -2,10 +2,16 @@ import React from "react";
 import "./TodoItem.css";
 import Checkbox from "../checkbox/CheckBox";
 
-const TodoItem = ({ id, title, description, completed, onCheckboxChange }) => {
+const TodoItem = ({
+  id,
+  title,
+  description,
+  completed,
+  onCheckboxChange,
+  openModal,
+}) => {
   const handleCheckboxChange = (value) => {
     if (onCheckboxChange) {
-      console.log(value, id);
       onCheckboxChange(value, id);
     }
   };
@@ -20,7 +26,11 @@ const TodoItem = ({ id, title, description, completed, onCheckboxChange }) => {
         </div>
         <div>
           <i className="fa fa-pencil" aria-hidden="true"></i>
-          <i className="fa fa-trash" aria-hidden="true"></i>
+          <i
+            className="fa fa-trash"
+            onClick={() => openModal(id)}
+            aria-hidden="true"
+          ></i>
         </div>
       </div>
 

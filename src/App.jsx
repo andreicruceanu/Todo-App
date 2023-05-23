@@ -5,6 +5,7 @@ import Button from "./components/button/Button";
 import "./App.css";
 import Modal from "./components/modal/Modal";
 import { AddTodoForm } from "./components/form/AddTodoForm";
+import { ModalDeleteTask } from "./components/modalDelete/ModalDeleteTask";
 
 const TODOS_MOCK = [
   {
@@ -35,21 +36,30 @@ const TODOS_MOCK = [
 ];
 
 function App() {
-  const [addTaskModal, setAddTaskModal] = useState(false);
-
   const [todoList, setTodoList] = useState(TODOS_MOCK);
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [selectedTodoId, setSelectedTodoId] = useState(null);
 
   const activeTodoList = todoList.filter((task) => task.completed === false);
 
-  console.log(activeTodoList);
+  console.log(todoList);
 
   const completeTodoList = todoList.filter((task) => task.completed === true);
 
-  const handleOpenAddTaskModal = () => {
-    setAddTaskModal(true);
+  const handleOpenModal = () => {
+    setIsOpenModal(true);
   };
-  const handleCloseAddTaskModal = () => {
-    setAddTaskModal(false);
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+    setDeleteMode(false);
+  };
+
+  const handleDeleteMode = (id) => {
+    setSelectedTodoId(id);
+    setIsOpenModal(true);
+    setDeleteMode(true);
   };
 
   const handleClickCheckbox = (value, id) => {
@@ -66,26 +76,40 @@ function App() {
     );
   };
 
+  const handleDeleteTask = (id) => {
+    setTodoList((prevState) => prevState.filter((task) => task.id !== id));
+    setDeleteMode(false);
+    setIsOpenModal(false);
+  };
+
   const addNewTask = (task) => {
     const newTask = {
       ...task,
-      id: parseInt(todoList.length) + 1,
+      id: Math.random().toString(36).slice(2, 10),
       completed: false,
     };
     setTodoList((prevState) => [...prevState, newTask]);
 
-    setAddTaskModal(false);
+    setIsOpenModal(false);
   };
 
   return (
     <div className="App">
       <div className="app-container">
-        <Modal isOpen={addTaskModal} onClose={handleCloseAddTaskModal}>
-          <AddTodoForm addNewTask={addNewTask} />
+        <Modal isOpen={isOpenModal} onClose={handleCloseModal}>
+          {deleteMode ? (
+            <ModalDeleteTask
+              onClose={handleCloseModal}
+              onDelete={handleDeleteTask}
+              id={selectedTodoId}
+            />
+          ) : (
+            <AddTodoForm addNewTask={addNewTask} />
+          )}
         </Modal>
         <Card>
           <h1>My todos</h1>
-          <Button onClick={handleOpenAddTaskModal}>Add +</Button>
+          <Button onClick={handleOpenModal}>Add +</Button>
           <div className="list-container">
             {activeTodoList.map((task) => (
               <TodoItem
@@ -94,6 +118,7 @@ function App() {
                 description={task.description}
                 completed={task.completed}
                 onCheckboxChange={handleClickCheckbox}
+                openModal={handleDeleteMode}
                 key={task.id}
               />
             ))}
@@ -111,6 +136,8 @@ function App() {
                 title={task.title}
                 onCheckboxChange={handleClickCheckbox}
                 description={task.description}
+                openModal={handleDeleteMode}
+                onDelete={handleDeleteTask}
               />
             ))}
           </div>
