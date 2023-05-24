@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./components/card/Card";
 import TodoItem from "./components/todo-item/TodoItem";
 import Button from "./components/button/Button";
@@ -6,6 +6,7 @@ import "./App.css";
 import Modal from "./components/modal/Modal";
 import { AddTodoForm } from "./components/form/AddTodoForm";
 import { ModalDeleteTask } from "./components/modalDelete/ModalDeleteTask";
+import { EditTodoForm } from "./components/form/EditTodoFrom";
 
 const TODOS_MOCK = [
   {
@@ -35,18 +36,31 @@ const TODOS_MOCK = [
   },
 ];
 
+const getStoredValuesFromLocalStorage = () => {
+  try {
+    const storedItems = localStorage.getItem("todos");
+
+    return storedItems ? JSON.parse(storedItems) : [];
+  } catch (error) {
+    return [];
+  }
+};
+
 function App() {
-  const [todoList, setTodoList] = useState(TODOS_MOCK);
+  const [todoList, setTodoList] = useState(getStoredValuesFromLocalStorage());
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [deleteMode, setDeleteMode] = useState(false);
+  const [editMode, setEditMode] = useState(null);
   const [selectedTodoId, setSelectedTodoId] = useState(null);
 
   const activeTodoList = todoList.filter((task) => task.completed === false);
 
-  console.log(todoList);
-
   const completeTodoList = todoList.filter((task) => task.completed === true);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todoList));
+  }, [todoList]);
 
   const handleOpenModal = () => {
     setIsOpenModal(true);
@@ -54,12 +68,19 @@ function App() {
   const handleCloseModal = () => {
     setIsOpenModal(false);
     setDeleteMode(false);
+    setEditMode(null);
   };
 
   const handleDeleteMode = (id) => {
     setSelectedTodoId(id);
-    setIsOpenModal(true);
     setDeleteMode(true);
+    setIsOpenModal(true);
+  };
+
+  const handleEditMode = (id) => {
+    const todoEdit = todoList.find((task) => task.id === id);
+    setEditMode(todoEdit);
+    setIsOpenModal(true);
   };
 
   const handleClickCheckbox = (value, id) => {
@@ -80,6 +101,20 @@ function App() {
     setTodoList((prevState) => prevState.filter((task) => task.id !== id));
     setDeleteMode(false);
     setIsOpenModal(false);
+  };
+
+  const handleEditTask = (editTask) => {
+    setTodoList((prev) =>
+      prev.map((item) => {
+        if (item.id === editTask.id) {
+          return editTask;
+        } else {
+          return item;
+        }
+      })
+    );
+    setIsOpenModal(false);
+    setEditMode(false);
   };
 
   const addNewTask = (task) => {
@@ -103,6 +138,11 @@ function App() {
               onDelete={handleDeleteTask}
               id={selectedTodoId}
             />
+          ) : editMode ? (
+            <EditTodoForm
+              initialValue={editMode}
+              onEditSubmit={handleEditTask}
+            />
           ) : (
             <AddTodoForm addNewTask={addNewTask} />
           )}
@@ -119,6 +159,7 @@ function App() {
                 completed={task.completed}
                 onCheckboxChange={handleClickCheckbox}
                 openModal={handleDeleteMode}
+                onEdit={handleEditMode}
                 key={task.id}
               />
             ))}

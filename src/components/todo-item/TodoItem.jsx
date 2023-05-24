@@ -9,6 +9,7 @@ const TodoItem = ({
   completed,
   onCheckboxChange,
   openModal,
+  onEdit,
 }) => {
   const handleCheckboxChange = (value) => {
     if (onCheckboxChange) {
@@ -25,7 +26,11 @@ const TodoItem = ({
           <h4>{title}</h4>
         </div>
         <div>
-          <i className="fa fa-pencil" aria-hidden="true"></i>
+          <i
+            className="fa fa-pencil"
+            onClick={() => onEdit(id)}
+            aria-hidden="true"
+          ></i>
           <i
             className="fa fa-trash"
             onClick={() => openModal(id)}
