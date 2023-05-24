@@ -172,13 +172,13 @@ function App() {
             {completeTodoList.map((task) => (
               <TodoItem
                 id={task.id}
-                completed={true}
-                key={task.id}
                 title={task.title}
-                onCheckboxChange={handleClickCheckbox}
                 description={task.description}
+                completed={true}
+                onCheckboxChange={handleClickCheckbox}
                 openModal={handleDeleteMode}
-                onDelete={handleDeleteTask}
+                onEdit={handleEditMode}
+                key={task.id}
               />
             ))}
           </div>
